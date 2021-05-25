@@ -1,5 +1,4 @@
 export const filter = (search, data) => {
-  console.log("data :>> ", search);
   data = data.filter((item) =>
     item.address.includes(search.address.toLowerCase())
   );
@@ -15,7 +14,7 @@ export const filter = (search, data) => {
   }
   if (search.district !== 0) {
     data = data.filter(
-      (item) => item.province.district_id.toString() === search.district
+      (item) => item.district.district_id.toString() === search.district
     );
   }
 

@@ -3,42 +3,47 @@ import { useStoreActions, useStoreState } from "easy-peasy";
 import _cloneDeep from "lodash/cloneDeep";
 
 import { Paper, Button, TextField } from "@material-ui/core";
+import { fetchProvince, fetchDistrict } from "../../Services";
 
 import SelectProvinceDistrict from "./SelectProvinceDistrict.Component";
 import SelectTypeAddress from "./SelectTypeAddress.Component";
 import { filter } from "./Filter";
 
 const SearchBox = () => {
-  const fetchProvince = useStoreActions(
-    (actions) => actions.dataUser.fetchProvince
-  );
-  const fetchDistrict = useStoreActions(
-    (actions) => actions.dataUser.fetchDistrict
-  );
   const setData = useStoreActions((actions) => actions.dataUser.setData);
   const data = useStoreState((state) => state.dataUser.data);
-  const province = useStoreState((state) => state.dataUser.province);
-  const district = useStoreState((state) => state.dataUser.district);
+  const [province, setProvince] = useState([]);
+  const [district, setDistrict] = useState([]);
   const [search, setSearch] = useState({
     typeOfAddress: "",
-    province: 0,
-    district: 0,
+    province: "",
+    district: "",
     address: "",
   });
 
   useEffect(() => {
     (async () => {
-      await fetchProvince();
+      try {
+        const res = await fetchProvince();
+        setProvince(res.results);
+      } catch {
+        console.log("error");
+      }
     })();
-  }, [fetchProvince]);
+  }, []);
 
   useEffect(() => {
     (async () => {
       if (search.province !== 0) {
-        await fetchDistrict(search.province);
+        try {
+          const res = await fetchDistrict(search.province);
+          setDistrict(res.results);
+        } catch {
+          console.log("error");
+        }
       }
     })();
-  }, [fetchDistrict, search.province]);
+  }, [search.province]);
 
   const handleChangeInput = (e) => {
     setSearch((pre) => ({ ...pre, address: e.target.value }));
@@ -72,6 +77,7 @@ const SearchBox = () => {
               values={province}
               type="province"
               setSearch={setSearch}
+              setDistrict={setDistrict}
             />
           </div>
           <div className="col-md-3 p-2">
@@ -80,6 +86,7 @@ const SearchBox = () => {
               values={district}
               type="district"
               setSearch={setSearch}
+              setDistrict={setDistrict}
             />
           </div>
         </div>
