@@ -1,6 +1,5 @@
-import { thunk, action } from "easy-peasy";
+import { thunk, action, actionOn } from "easy-peasy";
 import { fetchData, fetchProvince, fetchDistrict } from "../Services";
-import _get from "lodash/get";
 
 const dataUser = {
   data: [],

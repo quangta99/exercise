@@ -22,7 +22,7 @@ const SelectProvinceDistrict = ({ setSearch, values, lable, type }) => {
     if (reason === "remove-option" || reason === "select-option") {
       if (type === "province")
         setSearch((pre) => ({ ...pre, province: options.province_id }));
-      if (type === "province")
+      if (type === "district")
         setSearch((pre) => ({ ...pre, district: options.district_id }));
     }
     if (reason === "clear") {
@@ -44,8 +44,7 @@ const SelectProvinceDistrict = ({ setSearch, values, lable, type }) => {
   return (
     <div>
       <Autocomplete
-        id="province"
-        style={{ width: 300 }}
+        id={lable}
         options={values}
         disabled={!values.length}
         loading={loadingProvice}
@@ -61,6 +60,7 @@ const SelectProvinceDistrict = ({ setSearch, values, lable, type }) => {
             {...params}
             label={lable}
             variant="filled"
+            id={lable}
             inputProps={{
               ...params.inputProps,
             }}
