@@ -3,10 +3,6 @@ import { fetchData } from "../Services";
 
 const dataUser = {
   data: [],
-  loadingData: false,
-  setLoadingData: action((state, payload) => {
-    state.data = payload;
-  }),
   setData: action((state, payload) => {
     state.data = payload;
     state.loadingData = false;

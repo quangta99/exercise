@@ -1,0 +1,11 @@
+.form {
+    width: 300px;
+}
+.address {
+    width: 100%;
+}
+.button-submit {
+    width: 100%;
+    display: flex;
+    justify-content:flex-end;
+}

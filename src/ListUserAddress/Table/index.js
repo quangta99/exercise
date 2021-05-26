@@ -1,5 +1,3 @@
-import { useStoreState } from "easy-peasy";
-
 import {
   Table,
   TableBody,
@@ -8,10 +6,33 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
 } from "@material-ui/core";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const TableData = () => {
-  const data = useStoreState((state) => state.dataUser.data);
+import "./index.css";
+
+import {deleteData} from '../../Services'
+import { SortField } from "./Sort";
+
+const TableData = ({ dataHandle, setDataHandle }) => {
+  const [type, setType] = useState(true);
+  const handleSort = (sortField) => {
+    setDataHandle((pre) => ({
+      ...pre,
+      data: SortField(dataHandle.data, sortField, type),
+    }));
+    setType(!type);
+  };
+
+  const handleDelete = (id) => {
+    deleteData(id)
+    setDataHandle((pre) => ({
+      ...pre,
+      fetchAgain: true,
+    }));
+  };
 
   return (
     <div className="mt-4">
@@ -19,16 +40,33 @@ const TableData = () => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow style={{ backgroundColor: "black" }}>
-              <TableCell style={{ color: "white" }}>Address</TableCell>
-              <TableCell style={{ color: "white" }}>Type of Address</TableCell>
-              <TableCell style={{ color: "white" }}>Province</TableCell>
-              <TableCell style={{ color: "white" }}>District</TableCell>
-              <TableCell style={{ color: "white" }}>Actions</TableCell>
+              <TableCell
+                className="table-cell"
+                onClick={() => handleSort("address")}
+              >
+                <p className="table-header-title">Address</p>
+              </TableCell>
+              <TableCell
+                className="table-cell"
+                onClick={() => handleSort("typeOfAddress")}
+              >
+                <p className="table-header-title">Type of Address</p>
+              </TableCell>
+              <TableCell
+                className="table-cell"
+                onClick={() => handleSort("province_name")}
+              >
+                <p className="table-header-title">Province</p>
+              </TableCell>
+              <TableCell className="table-cell">
+                <p className="table-header-title">District</p>
+              </TableCell>
+              <TableCell className="table-cell"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.length &&
-              data.map((row, index) => (
+            {dataHandle.data ? (
+              dataHandle.data.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell align="left">{row.address}</TableCell>
                   <TableCell align="left">{row.typeOfAddress}</TableCell>
@@ -38,9 +76,28 @@ const TableData = () => {
                   <TableCell align="left">
                     {row.district.district_name}
                   </TableCell>
-                  <TableCell align="left"></TableCell>
+                  <TableCell align="left">
+                    <div className="flex align-items-center">
+                      <Link style={{textDecoration: 'none'}} to={`/${row.id}`}>
+                        <Button variant="text" color="primary" className="p-2">
+                          Edit
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="text"
+                        color="secondary"
+                        className="p-2"
+                        onClick={() => handleDelete(row.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <div className="no-data">No Data</div>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

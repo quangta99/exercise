@@ -1,46 +1,35 @@
 import { useState, useEffect } from "react";
-import { useStoreActions, useStoreState } from "easy-peasy";
-import _cloneDeep from "lodash/cloneDeep";
 
-import { Paper, Button, TextField } from "@material-ui/core";
+import { Paper, Button, TextField, IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import { fetchProvince, fetchDistrict } from "../../Services";
 
 import SelectProvinceDistrict from "./SelectProvinceDistrict.Component";
-import SelectTypeAddress from "./SelectTypeAddress.Component";
+import SelectTypeAddress from "../../Components/SelectTypeAddress.Component";
 import { filter } from "./Filter";
 
-const SearchBox = () => {
-  const setData = useStoreActions((actions) => actions.dataUser.setData);
-  const data = useStoreState((state) => state.dataUser.data);
+const SearchBox = ({ dataHandle, setDataHandle }) => {
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
   const [search, setSearch] = useState({
     typeOfAddress: "",
-    province: "",
-    district: "",
+    province: undefined,
+    district: undefined,
     address: "",
   });
 
   useEffect(() => {
     (async () => {
-      try {
-        const res = await fetchProvince();
-        setProvince(res.results);
-      } catch {
-        console.log("error");
-      }
+      const res = await fetchProvince();
+      setProvince(res.results);
     })();
   }, []);
 
   useEffect(() => {
     (async () => {
-      if (search.province !== 0) {
-        try {
-          const res = await fetchDistrict(search.province);
-          setDistrict(res.results);
-        } catch {
-          console.log("error");
-        }
+      if (search.province !== undefined) {
+        const res = await fetchDistrict(search.province);
+        setDistrict(res.results);
       }
     })();
   }, [search.province]);
@@ -49,19 +38,28 @@ const SearchBox = () => {
     setSearch((pre) => ({ ...pre, address: e.target.value }));
   };
 
+  const handleClear = () => {
+    setSearch({
+      typeOfAddress: "",
+      province: undefined,
+      district: undefined,
+      address: "",
+    });
+    setDataHandle((pre) => ({ ...pre, fetchAgain: true }));
+  };
   const handleSubmit = () => {
-    const temp = _cloneDeep(data);
-    const result = filter(search, temp);
-    setData(result);
+    console.log(search)
+    const result = filter(search, dataHandle.dataBackup);
+    setDataHandle((pre) => ({ ...pre, data: result }));
   };
 
   return (
     <Paper className="p-4 mt-4">
       <div className="row justiy-content-between">
-        <div className="row col-md-9">
+        <div className="row col-md-10">
           <div className="col-md-3 p-2">
             <TextField
-              placeholder="Address"
+              label="Address"
               value={search.address}
               onChange={handleChangeInput}
               variant="filled"
@@ -69,15 +67,16 @@ const SearchBox = () => {
             />
           </div>
           <div className="col-md-3 p-2">
-            <SelectTypeAddress search={search} setSearch={setSearch} />
+            <SelectTypeAddress data={search} setData={setSearch} />
           </div>
           <div className="col-md-3 p-2">
             <SelectProvinceDistrict
               lable="Select City"
               values={province}
               type="province"
-              setSearch={setSearch}
+              setData={setSearch}
               setDistrict={setDistrict}
+              search={search}
             />
           </div>
           <div className="col-md-3 p-2">
@@ -85,13 +84,27 @@ const SearchBox = () => {
               lable="Select District"
               values={district}
               type="district"
-              setSearch={setSearch}
+              setData={setSearch}
               setDistrict={setDistrict}
+              search={search}
             />
           </div>
         </div>
-        <div className="col-md-3 d-flex align-items-center">
-          <Button onClick={handleSubmit} variant="outlined">
+        <div className="col-md-2 d-flex align-items-center justify-content-end p-2">
+          <IconButton
+            color="inherit"
+            onClick={handleClear}
+            className="h-100"
+            variant="contained"
+          >
+            <CloseIcon />
+          </IconButton>
+          <Button
+            color="primary"
+            onClick={handleSubmit}
+            className="h-100"
+            variant="contained"
+          >
             Search
           </Button>
         </div>

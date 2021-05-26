@@ -12,40 +12,43 @@ const useStyles = makeStyles({
 });
 
 const SelectProvinceDistrict = ({
-  setSearch,
+  setData,
   values,
   lable,
   type,
   setDistrict,
+  search,
 }) => {
   const classes = useStyles();
   const onSelectOption = (_, options, reason) => {
+    console.log(reason);
     if (reason === "remove-option" || reason === "select-option") {
       if (type === "province") {
-        setSearch((pre) => ({
+        setData((pre) => ({
           ...pre,
           province: options.province_id,
-          district: "",
+          district: undefined,
         }));
         setDistrict([]);
       }
 
-      if (type === "district")
-        setSearch((pre) => ({ ...pre, district: options.district_id }));
+      if (type === "district") {
+        setData((pre) => ({ ...pre, district: options.district_id }));
+      }
     }
     if (reason === "clear") {
       if (type === "province") {
-        setSearch((prev) => ({
+        setData((prev) => ({
           ...prev,
-          province: "",
-          district: "",
+          province: undefined,
+          district: undefined,
         }));
         setDistrict([]);
       }
       if (type === "district") {
-        setSearch((prev) => ({
+        setData((prev) => ({
           ...prev,
-          district: "",
+          district: undefined,
         }));
       }
     }
@@ -56,7 +59,8 @@ const SelectProvinceDistrict = ({
       <Autocomplete
         id={lable}
         options={values}
-        disabled={!values.length}
+        // value={type === "province" ? search.province : search.district}
+        disabled={values.length < 1}
         classes={{
           option: classes.option,
         }}
@@ -64,6 +68,11 @@ const SelectProvinceDistrict = ({
         getOptionLabel={(option) =>
           option.province_name ? option.province_name : option.district_name
         }
+        // getOptionSelected={(option, value) =>
+        //   type === "province"
+        //     ? option.province_id === value
+        //     : option.district_id === value
+        // }
         renderInput={(params) => (
           <TextField
             {...params}

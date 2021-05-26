@@ -1,0 +1,12 @@
+.no-data {
+    align-items: center;
+    width: 100%;
+    padding: 16px;
+}
+.table-cell {
+    color: white !important;
+}
+.table-header-title {
+    cursor: pointer;
+    margin-bottom: 0;
+}

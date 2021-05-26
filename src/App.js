@@ -1,15 +1,31 @@
-import { StoreProvider } from "easy-peasy";
-
+import { useEffect, useState } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 
-import { store } from "./Store";
-import ListUserAddress from "./ListUserAddress";
+import Routes from './routes'
+import {fetchData} from './Services'
+
 
 function App() {
+
+  const [dataHandle, setDataHandle] = useState({
+    data: [],
+    dataBackup: [],
+    fetchAgain: false
+  })
+  
+  useEffect(() => {
+    (async()=> {
+      const res = await fetchData()
+      setDataHandle((pre) => ({...pre, data: res,dataBackup: res ,fetchAgain: false}))
+    })()
+  }, [dataHandle.fetchAgain])
+
   return (
-    <StoreProvider store={store}>
-      <ListUserAddress />
-    </StoreProvider>
+    <Router>
+      <Routes dataHandle={dataHandle} setDataHandle={setDataHandle} />
+    </Router>
+
   );
 }
 export default App;

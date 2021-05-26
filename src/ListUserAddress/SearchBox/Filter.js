@@ -7,16 +7,15 @@ export const filter = (search, data) => {
       (item) => item.typeOfAddress.toString() === search.typeOfAddress
     );
   }
-  if (search.province !== 0) {
+  if (search.province !== undefined) {
     data = data.filter(
-      (item) => item.province.province_id.toString() === search.province
+      (item) => item.province.province_id === search.province
     );
   }
-  if (search.district !== 0) {
+  if (search.district !== undefined) {
     data = data.filter(
-      (item) => item.district.district_id.toString() === search.district
+      (item) => item.district.district_id === search.district
     );
   }
-
   return data;
 };
