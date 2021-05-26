@@ -1,6 +1,5 @@
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { TextField, makeStyles } from "@material-ui/core";
-import _get from 'lodash/get'
 
 const useStyles = makeStyles({
   option: {
@@ -12,11 +11,20 @@ const useStyles = makeStyles({
   },
 });
 
-const SelectProvinceDistrict = ({ setData, values, lable, type, data }) => {
+const SelectProvinceDistrict = ({
+  setData,
+  values,
+  lable,
+  type,
+  data,
+  error,
+  setValidation,
+}) => {
   const classes = useStyles();
   const onSelectOption = (_, options, reason) => {
     if (reason === "remove-option" || reason === "select-option") {
       if (type === "province_edit") {
+        setValidation((pre) => ({ ...pre, province: false }));
         setData((pre) => ({
           ...pre,
           province: {
@@ -31,6 +39,7 @@ const SelectProvinceDistrict = ({ setData, values, lable, type, data }) => {
       }
 
       if (type === "district_edit") {
+        setValidation((pre) => ({ ...pre, district: false }));
         setData((pre) => ({
           ...pre,
           district: {
@@ -75,15 +84,19 @@ const SelectProvinceDistrict = ({ setData, values, lable, type, data }) => {
         classes={{
           option: classes.option,
         }}
-        value={type === 'province_edit' ? data.province : data.district}
+        value={type === "province_edit" ? data.province : data.district}
         onChange={onSelectOption}
         getOptionSelected={(option, value) =>
           type === "province_edit"
-            ? (_get(option, 'province_name', '') === _get(value, 'province.province_name', ''))
-            : (_get(option, 'district_name', '')  === _get(value, 'district.district_name', ''))
+            ? option?.province_id === value?.province_id &&
+              option?.province_name === value?.province_name
+            : option?.district_id === value?.district_id &&
+              option?.district_name === value?.district_name
         }
         getOptionLabel={(option) =>
-          type === "province_edit" ? option.province_name : option.district_name
+          type === "province_edit"
+            ? option?.province_name
+            : option?.district_name
         }
         renderInput={(params) => (
           <TextField
@@ -91,6 +104,7 @@ const SelectProvinceDistrict = ({ setData, values, lable, type, data }) => {
             label={lable}
             variant="filled"
             id={lable}
+            error={error}
             value={
               type === "province_edit"
                 ? data.province.province_name

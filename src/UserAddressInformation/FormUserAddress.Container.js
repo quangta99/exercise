@@ -1,23 +1,20 @@
 import { useEffect, useState } from "react";
-import { TextField, Button } from "@material-ui/core";
-import { useParams, useHistory } from "react-router";
+import { TextField } from "@material-ui/core";
 
 import "./FormUserAddress.css";
 
-import { fetchProvince, fetchDistrict, editData, createData } from "../Services";
+import { fetchProvince, fetchDistrict } from "../Services";
 import SelectTypeAddress from "../Components/SelectTypeAddress.Component";
 import SelectProvinceDistrict from "./SelectProvinceDistrict.Component";
 
-const FormUserAddress = ({ data, setData, setDataHandle }) => {
-  const { id } = useParams();
-  const history = useHistory()
+const FormUserAddress = ({ data, setData, validation, setValidation }) => {
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
 
   useEffect(() => {
     (async () => {
       const res = await fetchProvince();
-      setProvince(res.results);
+      setProvince(res);
     })();
   }, []);
 
@@ -25,32 +22,18 @@ const FormUserAddress = ({ data, setData, setDataHandle }) => {
     (async () => {
       if (data.province.province_id !== undefined) {
         const res = await fetchDistrict(data.province.province_id);
-        setDistrict(res.results);
+        setDistrict(res);
       }
     })();
   }, [data.province.province_id]);
 
   const handleInputChange = (e) => {
-    setData((pre) => ({...pre,
-        address: e.target.value
-    }))
-  }
-
-  const handleSubmit = () => {
-      if(id !== 'create') {
-        editData(data)
-        history.push('/')
-        setDataHandle((pre) => ({...pre, fetchAgain: true}))
-      }
-      else {
-        createData(data)
-        history.push('/')
-        setDataHandle((pre) => ({...pre, fetchAgain: true}))
-      }
+    setData((pre) => ({ ...pre, address: e.target.value }));
+    setValidation((pre) => ({ ...pre, address: false }));
   };
 
   return (
-    <div className="form">
+    <div className="">
       <div className="mb-2">
         <TextField
           label="Address"
@@ -58,10 +41,16 @@ const FormUserAddress = ({ data, setData, setDataHandle }) => {
           variant="filled"
           value={data.address}
           onChange={handleInputChange}
+          error={validation.address}
         />
       </div>
       <div className="mb-2">
-        <SelectTypeAddress data={data} setData={setData} />
+        <SelectTypeAddress
+          error={validation.typeOfAddress}
+          setValidation={setValidation}
+          data={data}
+          setData={setData}
+        />
       </div>
       <div className="mb-2">
         <SelectProvinceDistrict
@@ -71,6 +60,8 @@ const FormUserAddress = ({ data, setData, setDataHandle }) => {
           data={data}
           setData={setData}
           setDistrict={setDistrict}
+          error={validation.province}
+          setValidation={setValidation}
         />
       </div>
       <div className="mb-2">
@@ -80,11 +71,10 @@ const FormUserAddress = ({ data, setData, setDataHandle }) => {
           type="district_edit"
           setData={setData}
           data={data}
+          error={validation.district}
+          setValidation={setValidation}
           setDistrict={setDistrict}
         />
-      </div>
-      <div className="button-submit">
-        <Button color="primary" variant="contained" onClick={handleSubmit}>{id !== "create" ? "Edit" : "Create"}</Button>
       </div>
     </div>
   );

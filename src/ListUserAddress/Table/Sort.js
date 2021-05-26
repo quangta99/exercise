@@ -1,23 +1,40 @@
-export const SortField = (data, sortedField, type) => {
-  if(type) {
+export const SortField = (data, sortedField, type, sortFieldSub) => {
+  if (type) {
     data.sort((a, b) => {
-      if (a[sortedField] > b[sortedField]) {
+      if (
+        sortFieldSub
+          ? a[sortedField][sortFieldSub] > b[sortedField][sortFieldSub]
+          : a[sortedField] > b[sortedField]
+      ) {
         return 1;
       }
-      if (a[sortedField] < b[sortedField]) {
+      if (
+        sortFieldSub
+          ? a[sortedField][sortFieldSub] < b[sortedField][sortFieldSub]
+          : a[sortedField] < b[sortedField]
+      ) {
         return -1;
       }
       return 0;
-  })}
-  else {
+    });
+  } else {
     data.sort((a, b) => {
-      if (a[sortedField] < b[sortedField]) {
+      if (
+        sortFieldSub
+          ? a[sortedField][sortFieldSub] < b[sortedField][sortFieldSub]
+          : a[sortedField] < b[sortedField]
+      ) {
         return 1;
       }
-      if (a[sortedField] > b[sortedField]) {
+      if (
+        sortFieldSub
+          ? a[sortedField][sortFieldSub] > b[sortedField][sortFieldSub]
+          : a[sortedField] > b[sortedField]
+      ) {
         return -1;
       }
       return 0;
-  })}
+    });
+  }
   return data;
 };

@@ -12,7 +12,7 @@ const useStyles = makeStyles({
 });
 
 const SelectProvinceDistrict = ({
-  setData,
+  setSearch,
   values,
   lable,
   type,
@@ -21,34 +21,54 @@ const SelectProvinceDistrict = ({
 }) => {
   const classes = useStyles();
   const onSelectOption = (_, options, reason) => {
-    console.log(reason);
     if (reason === "remove-option" || reason === "select-option") {
       if (type === "province") {
-        setData((pre) => ({
+        setSearch((pre) => ({
           ...pre,
-          province: options.province_id,
-          district: undefined,
+          province: {
+            province_id: options.province_id,
+            province_name: options.province_name,
+          },
+          district: {
+            district_id: undefined,
+            district_name: "",
+          },
         }));
         setDistrict([]);
       }
 
       if (type === "district") {
-        setData((pre) => ({ ...pre, district: options.district_id }));
+        setSearch((pre) => ({
+          ...pre,
+          district: {
+            district_id: options.district_id,
+            district_name: options.district_name,
+          },
+        }));
       }
     }
     if (reason === "clear") {
       if (type === "province") {
-        setData((prev) => ({
+        setSearch((prev) => ({
           ...prev,
-          province: undefined,
-          district: undefined,
+          province: {
+            province_id: undefined,
+            province_name: "",
+          },
+          district: {
+            district_id: undefined,
+            district_name: "",
+          },
         }));
         setDistrict([]);
       }
       if (type === "district") {
-        setData((prev) => ({
+        setSearch((prev) => ({
           ...prev,
-          district: undefined,
+          district: {
+            district_id: undefined,
+            district_name: "",
+          },
         }));
       }
     }
@@ -59,20 +79,22 @@ const SelectProvinceDistrict = ({
       <Autocomplete
         id={lable}
         options={values}
-        // value={type === "province" ? search.province : search.district}
+        value={type === "province" ? search.province : search.district}
         disabled={values.length < 1}
         classes={{
           option: classes.option,
         }}
         onChange={onSelectOption}
         getOptionLabel={(option) =>
-          option.province_name ? option.province_name : option.district_name
+          type === "province" ? option?.province_name : option?.district_name
         }
-        // getOptionSelected={(option, value) =>
-        //   type === "province"
-        //     ? option.province_id === value
-        //     : option.district_id === value
-        // }
+        getOptionSelected={(option, value) =>
+          type === "province"
+            ? option?.province_id === value?.province_id &&
+              option?.province_name === value?.province_name
+            : option?.district_id === value?.district_id &&
+              option?.district_name === value?.district_name
+        }
         renderInput={(params) => (
           <TextField
             {...params}
