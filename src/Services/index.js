@@ -80,23 +80,22 @@ export const paginate = (page, data) => {
 };
 
 export const filter = (search, data) => {
-  data = data.filter((item) =>
-    item.address.includes(search.address.toLowerCase())
-  );
-  if (search.typeOfAddress) {
-    data = data.filter(
-      (item) => item.typeOfAddress.toString() === search.typeOfAddress
+    data = data.filter((item) =>item.address.search(search.address.toLowerCase() > -1)
     );
-  }
-  if (search.province.province_id !== undefined) {
-    data = data.filter(
-      (item) => item.province.province_id === search.province.province_id
-    );
-  }
-  if (search.district.district_id !== undefined) {
-    data = data.filter(
-      (item) => item.district.district_id === search.district.district_id
-    );
-  }
+    if (search.typeOfAddress) {
+      data = data.filter(
+        (item) => item.typeOfAddress.toString() === search.typeOfAddress
+      );
+    }
+    if (search.province.province_id !== undefined) {
+      data = data.filter(
+        (item) => item.province.province_id === search.province.province_id
+      );
+    }
+    if (search.district.district_id !== undefined) {
+      data = data.filter(
+        (item) => item.district.district_id === search.district.district_id
+      );
+    }
   return data;
 };

@@ -7,13 +7,15 @@ import { fetchProvince, fetchDistrict } from "../../Services";
 import SelectProvinceDistrict from "./SelectProvinceDistrict.Component";
 import SelectTypeAddress from "../../Components/SelectTypeAddress.Component";
 import { filter } from "../../Services";
-import FilteringTag from "./FilteringTag.Component";
+import CustomAutoComplete from "../../Components/CustomAutoComplete/CustomAutoComplete.Component";
+// import FilteringTag from "./FilteringTag.Component";
 
 const SearchBox = ({ dataHandle, setDataHandle }) => {
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
-  const [showTag, setShowTag] = useState(false);
+  // const [showTag, setShowTag] = useState(false);
   const [search, setSearch] = useState({
+    isSearch: false,
     typeOfAddress: "",
     province: {
       province_id: undefined,
@@ -25,6 +27,19 @@ const SearchBox = ({ dataHandle, setDataHandle }) => {
     },
     address: "",
   });
+
+  // useEffect(() => {
+  //   (() => {
+  //     if (search.isSearch) {
+  //       const result = filter(search, dataHandle.dataBackup);
+  //       setDataHandle((pre) => ({
+  //         ...pre,
+  //         dataSearch: result,
+  //         data: result,
+  //       }));
+  //     }
+  //   })();
+  // }, [dataHandle.dataBackup, search, setDataHandle]);
 
   useEffect(() => {
     (async () => {
@@ -48,6 +63,7 @@ const SearchBox = ({ dataHandle, setDataHandle }) => {
 
   const handleClear = () => {
     setSearch({
+      isSearch: false,
       typeOfAddress: "",
       province: {
         province_id: undefined,
@@ -59,29 +75,29 @@ const SearchBox = ({ dataHandle, setDataHandle }) => {
       },
       address: "",
     });
-    setDataHandle((pre) => ({ ...pre, fetchAgain: true, filtering: false }));
+    setDataHandle((pre) => ({ ...pre, fetchAgain: true }));
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const result = filter(search, dataHandle.dataBackup);
     setDataHandle((pre) => ({
       ...pre,
+      dataSearch: result,
       data: result,
-      dataBackup: result,
-      filtering: true,
     }));
-    setShowTag(true);
+    // setShowTag(true);
   };
 
   return (
     <Paper className="p-4 mt-4">
+      <CustomAutoComplete data={province}/>
       <div className="row justiy-content-between">
         <div className="row col-lg-10 col-md-10">
-          <div className="col-md-3 p-2">
+          <div className="col-md-2 p-2">
             <TextField
               label="Address"
               value={search.address}
               onChange={handleChangeInput}
-              variant="filled"
+              variant="outlined"
               className="w-100"
             />
           </div>
@@ -134,14 +150,14 @@ const SearchBox = ({ dataHandle, setDataHandle }) => {
           </Button>
         </div>
       </div>
-      {showTag && (
+      {/* {showTag && (
         <FilteringTag
           search={search}
           setDataHandle={setDataHandle}
           setSearch={setSearch}
           handleSubmit={handleSubmit}
         />
-      )}
+      )} */}
     </Paper>
   );
 };

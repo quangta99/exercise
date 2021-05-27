@@ -1,13 +1,13 @@
 import { Chip } from "@material-ui/core";
 
-const FilteringTag = ({ search, setSearch, handleSubmit, setDataHandle }) => {
+const FilteringTag = ({ search, setSearch, handleSubmit }) => {
+  const handleDeleteAddress = async () => {
+    setSearch((pre) => ({ ...pre, address: "", isSearch: true }));
+  }
   const handleDeleteTypeOfAddress = async () => {
-    setSearch((pre) => ({ ...pre, typeOfAddress: "" }));
-    await setDataHandle((pre) => ({ ...pre, fetchAgain: true }));
-    handleSubmit();
+    setSearch((pre) => ({ ...pre, typeOfAddress: "", isSearch: true }));
   };
   const handleDeleteProvince = async () => {
-    await setDataHandle((pre) => ({ ...pre, fetchAgain: true }));
     setSearch((prev) => ({
       ...prev,
       province: {
@@ -18,8 +18,8 @@ const FilteringTag = ({ search, setSearch, handleSubmit, setDataHandle }) => {
         district_id: undefined,
         district_name: "",
       },
+      isSearch: true
     }));
-    handleSubmit();
   };
   const handleDeleteDistrict = async () => {
     setSearch((prev) => ({
@@ -28,13 +28,21 @@ const FilteringTag = ({ search, setSearch, handleSubmit, setDataHandle }) => {
         district_id: undefined,
         district_name: "",
       },
+      isSearch: true
     }));
-    await setDataHandle((pre) => ({ ...pre, fetchAgain: true }));
-    handleSubmit();
   };
   return (
     <div className="flex mt-2">
       <h6>Filtering: </h6>
+      {
+        search.address && (
+          <Chip
+            className="m-1"
+            label={search.address}
+            onDelete={handleDeleteAddress}
+          />
+        )
+      }
       {search.typeOfAddress && (
         <Chip
           className="m-1"

@@ -99,7 +99,7 @@ const SelectProvinceDistrict = ({
           <TextField
             {...params}
             label={lable}
-            variant="filled"
+            variant="outlined"
             id={lable}
             inputProps={{
               ...params.inputProps,

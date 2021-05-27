@@ -19,22 +19,37 @@ import PaginationComponent from "./Pagination.Component";
 
 const TableData = ({ dataHandle, setDataHandle }) => {
   const [type, setType] = useState(true);
+  const [page, setPage] = useState(0);
   const handleSort = (sortField, sortFieldSub) => {
     setDataHandle((pre) => ({
       ...pre,
-      data: SortField(dataHandle.dataBackup, sortField, type, sortFieldSub),
+      data: SortField(dataHandle.dataSearch ? dataHandle.dataSearch : dataHandle.dataBackup, sortField, type, sortFieldSub),
     }));
     setType(!type);
   };
 
   useEffect(() => {
     (() => {
-      if (dataHandle.data.length >= 5) {
-        const res = paginate(0, dataHandle.dataBackup);
+      if (
+        dataHandle.dataSearch
+          ? dataHandle.dataSearch.length >= 5
+          : dataHandle.dataBackup.length >= 5
+      ) {
+        const res = paginate(
+          page > 1 ? (page - 1) * 5 : 0,
+          dataHandle.dataSearch ? dataHandle.dataSearch : dataHandle.dataBackup
+        );
         setDataHandle((pre) => ({ ...pre, data: res }));
       }
     })();
-  }, [dataHandle.data.length, dataHandle.dataBackup, setDataHandle]);
+  }, [
+    dataHandle.data.length,
+    dataHandle.dataBackup,
+    dataHandle.dataSearch,
+    page,
+    setDataHandle,
+    setPage,
+  ]);
 
   const handleDelete = (id) => {
     deleteData(id);
@@ -125,9 +140,12 @@ const TableData = ({ dataHandle, setDataHandle }) => {
       </div>
       <div className="w-100 d-flex justify-content-end mt-4">
         <PaginationComponent
-          total={Math.ceil(dataHandle.dataBackup.length / 5)}
-          setDataHandle={setDataHandle}
-          dataHandle={dataHandle}
+          total={Math.ceil(
+            dataHandle.dataSearch
+              ? dataHandle.dataSearch.length / 5
+              : dataHandle.dataBackup.length / 5
+          )}
+          setPage={setPage}
         />
       </div>
     </div>

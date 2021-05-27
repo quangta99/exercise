@@ -9,8 +9,8 @@ function App() {
   const [dataHandle, setDataHandle] = useState({
     data: [],
     dataBackup: [],
+    dataSearch: undefined,
     fetchAgain: false,
-    filtering: false,
   });
 
   useEffect(() => {
@@ -20,6 +20,7 @@ function App() {
         ...pre,
         data: res,
         dataBackup: res,
+        dataSearch: undefined,
         fetchAgain: false,
       }));
     })();
