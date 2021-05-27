@@ -9,8 +9,14 @@ const ListUserAddress = ({ dataHandle, setDataHandle }) => {
       <Container>
         <SearchBox dataHandle={dataHandle} setDataHandle={setDataHandle} />
         <div className="w-100 d-flex justify-content-end mt-4">
-          <Link style={{textDecoration: 'none'}} to="/create">
-            <Button color="primary" variant="contained">Create</Button>
+          <Link style={{ textDecoration: "none" }} to="/create">
+            <Button
+              style={{ marginRight: 38 }}
+              color="primary"
+              variant="contained"
+            >
+              Create
+            </Button>
           </Link>
         </div>
         <TableData dataHandle={dataHandle} setDataHandle={setDataHandle} />

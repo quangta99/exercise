@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
 
-import { Paper, Button, TextField, IconButton } from "@material-ui/core";
+import { Paper, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { fetchProvince, fetchDistrict } from "../../Services";
+import SearchIcon from "@material-ui/icons/Search";
 
-import SelectProvinceDistrict from "./SelectProvinceDistrict.Component";
-import SelectTypeAddress from "../../Components/SelectTypeAddress.Component";
+import "./SearchBox.css";
+
+import { fetchProvince, fetchDistrict, fetchWard } from "../../Services";
+import SelectTypeAddress from "./SelectTypeAddress.Component";
 import { filter } from "../../Services";
-import CustomAutoComplete from "../../Components/CustomAutoComplete/CustomAutoComplete.Component";
-// import FilteringTag from "./FilteringTag.Component";
+import CustomAutoComplete from "./CustomAutoComplete/CustomAutoComplete.Component";
 
 const SearchBox = ({ dataHandle, setDataHandle }) => {
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
-  // const [showTag, setShowTag] = useState(false);
+  const [ward, setWard] = useState([]);
   const [search, setSearch] = useState({
     isSearch: false,
     typeOfAddress: "",
@@ -25,21 +26,12 @@ const SearchBox = ({ dataHandle, setDataHandle }) => {
       district_id: undefined,
       district_name: "",
     },
+    ward: {
+      ward_id: undefined,
+      ward_name: "",
+    },
     address: "",
   });
-
-  // useEffect(() => {
-  //   (() => {
-  //     if (search.isSearch) {
-  //       const result = filter(search, dataHandle.dataBackup);
-  //       setDataHandle((pre) => ({
-  //         ...pre,
-  //         dataSearch: result,
-  //         data: result,
-  //       }));
-  //     }
-  //   })();
-  // }, [dataHandle.dataBackup, search, setDataHandle]);
 
   useEffect(() => {
     (async () => {
@@ -56,6 +48,15 @@ const SearchBox = ({ dataHandle, setDataHandle }) => {
       }
     })();
   }, [search.province.province_id]);
+
+  useEffect(() => {
+    (async () => {
+      if (search.district.district_id !== undefined) {
+        const res = await fetchWard(search.district.district_id);
+        setWard(res);
+      }
+    })();
+  }, [search.district.district_id]);
 
   const handleChangeInput = (e) => {
     setSearch((pre) => ({ ...pre, address: e.target.value }));
@@ -84,51 +85,60 @@ const SearchBox = ({ dataHandle, setDataHandle }) => {
       dataSearch: result,
       data: result,
     }));
-    // setShowTag(true);
   };
 
   return (
     <Paper className="p-4 mt-4">
-      <CustomAutoComplete data={province}/>
       <div className="row justiy-content-between">
-        <div className="row col-lg-10 col-md-10">
-          <div className="col-md-2 p-2">
-            <TextField
+        <div className="row col-lg-11 col-md-11">
+          <div className="col-md-2 p-2 input">
+            <input
               label="Address"
               value={search.address}
               onChange={handleChangeInput}
-              variant="outlined"
-              className="w-100"
+              className="w-100 h-100 input-area"
+              placeholder="Address"
             />
           </div>
-          <div className="col-md-2 p-2">
-            <SelectTypeAddress
-              error={false}
-              data={search}
-              setData={setSearch}
-            />
+          <div className="col-md-1 p-2">
+            <SelectTypeAddress data={search} setData={setSearch} />
           </div>
-          <div className="col-md-3 p-2">
-            <SelectProvinceDistrict
-              lable="Select City"
+          <div className="col-md-3 col-lg-3 p-2">
+            <CustomAutoComplete
+              lable="Select Province"
               values={province}
               type="province"
               setSearch={setSearch}
               setDistrict={setDistrict}
+              setWard={setWard}
               search={search}
             />
           </div>
-          <div className="col-md-3 p-2">
-            <SelectProvinceDistrict
+          <div className="col-md-3 col-lg-3 p-2">
+            <CustomAutoComplete
               lable="Select District"
               values={district}
               type="district"
               setSearch={setSearch}
               setDistrict={setDistrict}
+              setWard={setWard}
               search={search}
             />
           </div>
-          <div className="col-md-1 p-2">
+          <div className="col-md-3 col-lg-3 p-2">
+            <CustomAutoComplete
+              lable="Select Ward"
+              values={ward}
+              type="ward"
+              setSearch={setSearch}
+              setDistrict={setDistrict}
+              setWard={setWard}
+              search={search}
+            />
+          </div>
+        </div>
+        <div className="col-lg-1 col-md-1 d-flex align-items-center justify-content-end p-2">
+          <div className="p-2">
             <IconButton
               color="inherit"
               onClick={handleClear}
@@ -138,26 +148,16 @@ const SearchBox = ({ dataHandle, setDataHandle }) => {
               <CloseIcon />
             </IconButton>
           </div>
-        </div>
-        <div className="col-lg-2 col-md-2 d-flex align-items-center justify-content-end p-2">
-          <Button
+          <IconButton
             color="primary"
             onClick={handleSubmit}
             className="h-100"
             variant="contained"
           >
-            Search
-          </Button>
+            <SearchIcon />
+          </IconButton>
         </div>
       </div>
-      {/* {showTag && (
-        <FilteringTag
-          search={search}
-          setDataHandle={setDataHandle}
-          setSearch={setSearch}
-          handleSubmit={handleSubmit}
-        />
-      )} */}
     </Paper>
   );
 };

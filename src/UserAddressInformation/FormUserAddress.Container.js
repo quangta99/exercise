@@ -3,13 +3,14 @@ import { TextField } from "@material-ui/core";
 
 import "./FormUserAddress.css";
 
-import { fetchProvince, fetchDistrict } from "../Services";
-import SelectTypeAddress from "../Components/SelectTypeAddress.Component";
+import { fetchProvince, fetchDistrict, fetchWard } from "../Services";
+import SelectTypeAddress from "./SelectTypeAddress.Component";
 import SelectProvinceDistrict from "./SelectProvinceDistrict.Component";
 
 const FormUserAddress = ({ data, setData, validation, setValidation }) => {
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
+  const [ward, setWard] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -27,6 +28,15 @@ const FormUserAddress = ({ data, setData, validation, setValidation }) => {
     })();
   }, [data.province.province_id]);
 
+  useEffect(() => {
+    (async () => {
+      if (data.district.district_id !== undefined) {
+        const res = await fetchWard(data.district.district_id);
+        setWard(res);
+      }
+    })();
+  }, [data.district.district_id]);
+
   const handleInputChange = (e) => {
     setData((pre) => ({ ...pre, address: e.target.value }));
     setValidation((pre) => ({ ...pre, address: false }));
@@ -34,17 +44,17 @@ const FormUserAddress = ({ data, setData, validation, setValidation }) => {
 
   return (
     <div className="">
-      <div className="mb-2">
+      <div className="mb-4">
         <TextField
           label="Address"
           className="address"
-          variant="filled"
+          variant="outlined"
           value={data.address}
           onChange={handleInputChange}
           error={validation.address}
         />
       </div>
-      <div className="mb-2">
+      <div className="mb-4">
         <SelectTypeAddress
           error={validation.typeOfAddress}
           setValidation={setValidation}
@@ -52,11 +62,11 @@ const FormUserAddress = ({ data, setData, validation, setValidation }) => {
           setData={setData}
         />
       </div>
-      <div className="mb-2">
+      <div className="mb-4">
         <SelectProvinceDistrict
           values={province}
           lable="Select Province"
-          type="province_edit"
+          type="province"
           data={data}
           setData={setData}
           setDistrict={setDistrict}
@@ -64,14 +74,26 @@ const FormUserAddress = ({ data, setData, validation, setValidation }) => {
           setValidation={setValidation}
         />
       </div>
-      <div className="mb-2">
+      <div className="mb-4">
         <SelectProvinceDistrict
           values={district}
           lable="Select District"
-          type="district_edit"
+          type="district"
           setData={setData}
           data={data}
           error={validation.district}
+          setValidation={setValidation}
+          setDistrict={setDistrict}
+        />
+      </div>
+      <div className="mb-4">
+        <SelectProvinceDistrict
+          values={ward}
+          lable="Select Ward"
+          type="ward"
+          setData={setData}
+          data={data}
+          error={validation.ward}
           setValidation={setValidation}
           setDistrict={setDistrict}
         />

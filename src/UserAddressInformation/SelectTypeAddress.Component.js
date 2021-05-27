@@ -7,7 +7,9 @@ const SelectTypeAddress = ({ setData, data, error, setValidation }) => {
   };
   return (
     <FormControl style={{ width: "100%" }} variant="filled">
-      <InputLabel error={error} htmlFor="filled-age-native-simple">Type</InputLabel>
+      <InputLabel error={error} htmlFor="filled-age-native-simple">
+        Type
+      </InputLabel>
       <Select
         onChange={handleChange}
         value={data.typeOfAddress}
@@ -15,10 +17,10 @@ const SelectTypeAddress = ({ setData, data, error, setValidation }) => {
         variant="outlined"
         error={error}
       >
-        <MenuItem className="cursor-pointer" value="home">
+        <MenuItem className="cursor-pointer" value="Home">
           Home
         </MenuItem>
-        <MenuItem className="cursor-pointer" value="work">
+        <MenuItem className="cursor-pointer" value="Work">
           Work
         </MenuItem>
       </Select>

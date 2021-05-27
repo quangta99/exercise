@@ -35,6 +35,17 @@ export const fetchDistrict = async (id) => {
   return formatted;
 };
 
+export const fetchWard = async (id) => {
+  const res = await axios
+    .get(`${host}/api/province/ward/${id}`)
+    .then((res) => res.data)
+    .catch((error) => console.log("error: ", error));
+  const formatted = res.results.map((item) => {
+    return { ward_id: item.ward_id, ward_name: item.ward_name };
+  });
+  return formatted;
+};
+
 export const fetchDataById = (id) => {
   const data = JSON.parse(localStorage.getItem("data"));
   const userAddress = data.find((item) => item.id.toString() === id);
@@ -80,22 +91,26 @@ export const paginate = (page, data) => {
 };
 
 export const filter = (search, data) => {
-    data = data.filter((item) =>item.address.search(search.address.toLowerCase() > -1)
+  data = data.filter((item) =>
+    item.address.toLowerCase().includes(search.address.toLowerCase())
+  );
+  if (search.typeOfAddress) {
+    data = data.filter(
+      (item) => item.typeOfAddress.toString() === search.typeOfAddress
     );
-    if (search.typeOfAddress) {
-      data = data.filter(
-        (item) => item.typeOfAddress.toString() === search.typeOfAddress
-      );
-    }
-    if (search.province.province_id !== undefined) {
-      data = data.filter(
-        (item) => item.province.province_id === search.province.province_id
-      );
-    }
-    if (search.district.district_id !== undefined) {
-      data = data.filter(
-        (item) => item.district.district_id === search.district.district_id
-      );
-    }
+  }
+  if (search.province.province_id !== undefined) {
+    data = data.filter(
+      (item) => item.province.province_id === search.province.province_id
+    );
+  }
+  if (search.district.district_id !== undefined) {
+    data = data.filter(
+      (item) => item.district.district_id === search.district.district_id
+    );
+  }
+  if (search.ward.ward_id !== undefined) {
+    data = data.filter((item) => item.ward.ward_id === search.ward.ward_id);
+  }
   return data;
 };

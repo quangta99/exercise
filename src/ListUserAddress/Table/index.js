@@ -23,7 +23,12 @@ const TableData = ({ dataHandle, setDataHandle }) => {
   const handleSort = (sortField, sortFieldSub) => {
     setDataHandle((pre) => ({
       ...pre,
-      data: SortField(dataHandle.dataSearch ? dataHandle.dataSearch : dataHandle.dataBackup, sortField, type, sortFieldSub),
+      data: SortField(
+        dataHandle.dataSearch ? dataHandle.dataSearch : dataHandle.dataBackup,
+        sortField,
+        type,
+        sortFieldSub
+      ),
     }));
     setType(!type);
   };
@@ -32,8 +37,8 @@ const TableData = ({ dataHandle, setDataHandle }) => {
     (() => {
       if (
         dataHandle.dataSearch
-          ? dataHandle.dataSearch.length >= 5
-          : dataHandle.dataBackup.length >= 5
+          ? dataHandle.dataSearch?.length >= 5
+          : dataHandle.dataBackup?.length >= 5
       ) {
         const res = paginate(
           page > 1 ? (page - 1) * 5 : 0,
@@ -43,7 +48,7 @@ const TableData = ({ dataHandle, setDataHandle }) => {
       }
     })();
   }, [
-    dataHandle.data.length,
+    dataHandle.data?.length,
     dataHandle.dataBackup,
     dataHandle.dataSearch,
     page,
@@ -90,6 +95,12 @@ const TableData = ({ dataHandle, setDataHandle }) => {
                 >
                   <p className="table-header-title">District</p>
                 </TableCell>
+                <TableCell
+                  className="table-cell"
+                  onClick={() => handleSort("ward", "ward_name")}
+                >
+                  <p className="table-header-title">Ward</p>
+                </TableCell>
                 <TableCell className="table-cell"></TableCell>
               </TableRow>
             </TableHead>
@@ -105,6 +116,7 @@ const TableData = ({ dataHandle, setDataHandle }) => {
                     <TableCell align="left">
                       {row.district.district_name}
                     </TableCell>
+                    <TableCell align="left">{row.ward.ward_name}</TableCell>
                     <TableCell align="left">
                       <div className="flex align-items-center">
                         <Link
@@ -142,8 +154,8 @@ const TableData = ({ dataHandle, setDataHandle }) => {
         <PaginationComponent
           total={Math.ceil(
             dataHandle.dataSearch
-              ? dataHandle.dataSearch.length / 5
-              : dataHandle.dataBackup.length / 5
+              ? dataHandle.dataSearch?.length / 5
+              : dataHandle.dataBackup?.length / 5
           )}
           setPage={setPage}
         />

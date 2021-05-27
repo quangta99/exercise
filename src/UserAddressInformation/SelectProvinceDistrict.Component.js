@@ -23,7 +23,7 @@ const SelectProvinceDistrict = ({
   const classes = useStyles();
   const onSelectOption = (_, options, reason) => {
     if (reason === "remove-option" || reason === "select-option") {
-      if (type === "province_edit") {
+      if (type === "province") {
         setValidation((pre) => ({ ...pre, province: false }));
         setData((pre) => ({
           ...pre,
@@ -35,10 +35,14 @@ const SelectProvinceDistrict = ({
             district_id: undefined,
             district_name: "",
           },
+          ward: {
+            ward_id: undefined,
+            ward_name: "",
+          },
         }));
       }
 
-      if (type === "district_edit") {
+      if (type === "district") {
         setValidation((pre) => ({ ...pre, district: false }));
         setData((pre) => ({
           ...pre,
@@ -46,11 +50,25 @@ const SelectProvinceDistrict = ({
             district_id: options.district_id,
             district_name: options.district_name,
           },
+          ward: {
+            ward_id: undefined,
+            ward_name: "",
+          },
+        }));
+      }
+      if (type === "ward") {
+        setValidation((pre) => ({ ...pre, ward: false }));
+        setData((pre) => ({
+          ...pre,
+          ward: {
+            ward_id: options.ward_id,
+            ward_name: options.ward_name,
+          },
         }));
       }
     }
     if (reason === "clear") {
-      if (type === "province_edit") {
+      if (type === "province") {
         setData((pre) => ({
           ...pre,
           province: {
@@ -61,14 +79,31 @@ const SelectProvinceDistrict = ({
             district_id: undefined,
             district_name: "",
           },
+          ward: {
+            ward_id: undefined,
+            ward_name: "",
+          },
         }));
       }
-      if (type === "district_edit") {
+      if (type === "district") {
         setData((pre) => ({
           ...pre,
           district: {
             district_id: undefined,
             district_name: "",
+          },
+          ward: {
+            ward_id: undefined,
+            ward_name: "",
+          },
+        }));
+      }
+      if (type === "ward") {
+        setData((pre) => ({
+          ...pre,
+          ward: {
+            ward_id: undefined,
+            ward_name: "",
           },
         }));
       }
@@ -84,32 +119,21 @@ const SelectProvinceDistrict = ({
         classes={{
           option: classes.option,
         }}
-        value={type === "province_edit" ? data.province : data.district}
+        value={data[type]}
         onChange={onSelectOption}
         getOptionSelected={(option, value) =>
-          type === "province_edit"
-            ? option?.province_id === value?.province_id &&
-              option?.province_name === value?.province_name
-            : option?.district_id === value?.district_id &&
-              option?.district_name === value?.district_name
+          option[type + "_id"] === value[type + "_id"] &&
+          option[type + "_name"] === value[type + "_name"]
         }
-        getOptionLabel={(option) =>
-          type === "province_edit"
-            ? option?.province_name
-            : option?.district_name
-        }
+        getOptionLabel={(option) => option[type + "_name"]}
         renderInput={(params) => (
           <TextField
             {...params}
             label={lable}
-            variant="filled"
+            variant="outlined"
             id={lable}
             error={error}
-            value={
-              type === "province_edit"
-                ? data.province.province_name
-                : data.district.district_name
-            }
+            value={data[type][type + "_name"]}
             inputProps={{
               ...params.inputProps,
             }}

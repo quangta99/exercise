@@ -4,6 +4,7 @@ export const validate = (data) => {
     typeOfAddress: false,
     province: false,
     district: false,
+    ward: false,
   };
   if (data.address === "") {
     validate.address = true;
@@ -16,6 +17,9 @@ export const validate = (data) => {
   }
   if (data.district.district_id === undefined) {
     validate.district = true;
+  }
+  if (data.ward.ward_id === undefined) {
+    validate.ward = true;
   }
   return validate;
 };

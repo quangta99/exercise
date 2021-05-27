@@ -22,6 +22,10 @@ const UserAddressInformation = ({ setDataHandle }) => {
       district_id: undefined,
       district_name: "",
     },
+    ward: {
+      ward_id: undefined,
+      ward_name: "",
+    },
     address: "",
   });
 
@@ -66,6 +70,10 @@ const UserAddressInformation = ({ setDataHandle }) => {
       district: {
         district_id: undefined,
         district_name: "",
+      },
+      ward: {
+        ward_id: undefined,
+        ward_name: "",
       },
       address: "",
     });
